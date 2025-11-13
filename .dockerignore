@@ -1,0 +1,6 @@
+.idea
+.git
+.gitignore
+source/.env.example
+venv/
+.venv
