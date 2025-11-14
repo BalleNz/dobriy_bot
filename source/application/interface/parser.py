@@ -1,12 +1,11 @@
-# core/clients/base_api_client.py
-from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, TypeVar, Generic
-from curl_cffi import requests
-from curl_cffi.requests import CurlHttpError
 import logging
 import time
-from dobriy_bot.source.core.config.parser_dobro import Config as settings
+from abc import ABC, abstractmethod
+from typing import Dict, Any, Optional, TypeVar, Generic
 
+from curl_cffi import requests
+from curl_cffi.requests import CurlHttpError
+from dobriy_bot.source.core.config.parser_dobro import Config as settings
 
 T = TypeVar("T")
 
@@ -17,10 +16,10 @@ class BaseAPIClient(ABC, Generic[T]):
     """
 
     def __init__(
-        self,
-        base_url: str,
-        headers: Optional[Dict[str, str]] = None,
-        timeout: Optional[int] = None,
+            self,
+            base_url: str,
+            headers: Optional[Dict[str, str]] = None,
+            timeout: Optional[int] = None,
     ):
         self._base_url = base_url.rstrip("/")
         self._headers = headers or {}
@@ -38,11 +37,11 @@ class BaseAPIClient(ABC, Generic[T]):
         pass
 
     def _request(
-        self,
-        method: str,
-        endpoint: str,
-        expected_status: int = 200,
-        **kwargs,
+            self,
+            method: str,
+            endpoint: str,
+            expected_status: int = 200,
+            **kwargs,
     ) -> Dict[str, Any]:
         url = f"{self._base_url}{endpoint}"
         auth_headers = self._get_auth_headers()
