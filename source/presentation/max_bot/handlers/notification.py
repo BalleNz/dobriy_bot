@@ -14,7 +14,7 @@ class NotificationsHandler(BaseHandler):
         _, payload, _ = self._parse_update(update)
 
         if payload == "notifications":
-            setting = await self.repo.get_notifications(chat_id)
+            #setting = await self.repo.get_notifications(chat_id)
             text = f"Новые проблемы: {'Да' if setting.new_problems else 'Нет'}\nСводка: {'Да' if setting.daily_summary else 'Нет'}"
             buttons = [
                 [Button(type="callback", text="Перекл. проблемы", payload="toggle_problems")],
@@ -25,7 +25,7 @@ class NotificationsHandler(BaseHandler):
             return
 
         if payload == "toggle_problems":
-            setting = await self.repo.get_notifications(chat_id)
+            #setting = await self.repo.get_notifications(chat_id)
             await self.repo.update_notifications(chat_id, new_problems=not setting.new_problems)
             body = NewMessageBody(text="Обновлено!")
             await self.client.send_message(chat_id, body)

@@ -14,7 +14,7 @@ class PrivacyHandler(BaseHandler):
         _, payload, _ = self._parse_update(update)
 
         if payload == "privacy":
-            profile = await self.repo.get_profile(chat_id)
+            #profile = await self.repo.get_profile(chat_id)
             share = "Да" if profile.privacy_share_profile else "Нет"
             text = f"Поделиться профилем: {share}"
             buttons = [
@@ -27,9 +27,9 @@ class PrivacyHandler(BaseHandler):
             return
 
         if payload == "toggle_share":
-            profile = await self.repo.get_profile(chat_id)
+            #profile = await self.repo.get_profile(chat_id)
             new_share = not profile.privacy_share_profile
-            await self.repo.update_profile(chat_id, privacy_share_profile=new_share)
+            #await self.repo.update_profile(chat_id, privacy_share_profile=new_share)
             body = NewMessageBody(text="Обновлено!")
             await self.client.send_message(chat_id, body)
             return

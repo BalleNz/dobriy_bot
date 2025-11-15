@@ -14,6 +14,8 @@ class UserState(Enum):
     FUND_CHOOSING_CATEGORY = "fund_choosing_category"
     FUND_ENTERING_AMOUNT = "fund_entering_amount"
     FUND_ENTERING_FREQUENCY = "fund_entering_frequency"
+    EDITING_BIRTH_DATE = "editing_birth_date"
+    EDITING_INTERESTS = "editing_interests"
 
 
 class FSM:
