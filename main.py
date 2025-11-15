@@ -19,9 +19,6 @@ async def main():
     maxbot = await dishka_container.get(MaxBotClient)
 
     async with maxbot as client:
-        repo = 1
-        #notifier = Notifier(client, repo)
-        #notifier.start()
 
         marker = None
         while True:
@@ -54,7 +51,7 @@ async def main():
 
                         handled = False
                         for handler_class in HANDLERS:
-                            handler = handler_class(client, repo)
+                            handler = handler_class(client)
                             if handler.can_handle(update, state):
                                 logger.info(f"Handling in {handler_class.__name__} for user_id={user_id}")
                                 await handler.handle(update, user_id, chat_id)
@@ -65,7 +62,7 @@ async def main():
                             update_type, _, text = BaseHandler._parse_update(update)
                             if text == "/start":
                                 logger.info("Fallback: /start for user_id={user_id}")
-                                await StartHandler(client, repo).handle(update, user_id, chat_id)
+                                await StartHandler(client).handle(update, user_id, chat_id)
                                 handled = True
 
                         if not handled and update.get("callback", {}).get("payload") == "main_menu":

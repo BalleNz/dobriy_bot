@@ -10,16 +10,16 @@ from source.infrastructure.database.uow import UnitOfWork
 S = TypeVar("S", bound=BaseModelSchema)
 
 
-class GetUserProfileById(Interactor[ProfileSchema, S]):
+class CreateOrUpdateProfile(Interactor[ProfileSchema, S]):
     def __init__(self, repository: ProfileRepository, uow: UnitOfWork):
         self.repository = repository
         self.uow = uow
 
-    async def __call__(self, user_id: int) -> None:
+    async def __call__(self, user: ProfileSchema) -> ProfileSchema:
         try:
             async with self.uow:
-                user = await self.repository.get_profile(
-                    user_id
+                user = await self.repository.create_or_update(
+                    user
                 )
                 await self.uow.commit()
                 return user

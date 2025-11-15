@@ -11,4 +11,4 @@ class RepositoryProvider(Provider):
     scope = Scope.REQUEST
 
     user_repository = provide(UserRepository)
-    payment_repository = provide(ProfileRepository)
+    profile_repository = provide(ProfileRepository)
