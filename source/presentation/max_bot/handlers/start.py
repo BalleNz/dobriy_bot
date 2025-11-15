@@ -27,11 +27,10 @@ class StartHandler(BaseHandler):
             else:
                 user_data = update["message"]["sender"]
             
-            # Создаём UserSchema (убедись в порядке аргументов по твоей модели)
             user_schema = UserSchema(
-                user_id=user_id,
-                username=user_data.get("username"),
-                first_name=user_data["first_name"],
+                max_id=str(user_id),
+                username=user_data.get("name"),
+                first_name=user_data.get("first_name"),
                 last_name=user_data.get("last_name")
             )
             
