@@ -1,8 +1,8 @@
-from source.presentation.max.handlers import BaseHandler
-from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState, fsm
-
 from typing import Dict
+
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.presentation.max_bot.handlers import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState
 
 
 class NotificationsHandler(BaseHandler):
@@ -10,7 +10,7 @@ class NotificationsHandler(BaseHandler):
         _, payload, _ = self._parse_update(update)
         return payload == "notifications"
 
-    async def handle(self, update: Dict,user_id: int, chat_id: int):
+    async def handle(self, update: Dict, user_id: int, chat_id: int):
         _, payload, _ = self._parse_update(update)
 
         if payload == "notifications":

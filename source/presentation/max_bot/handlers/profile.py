@@ -4,6 +4,11 @@ from source.presentation.max.states.fsm import UserState, fsm
 from datetime import datetime
 from typing import Dict
 
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.presentation.max_bot.handlers import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState, fsm
+
+
 class ProfileHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
         _, payload, _ = self._parse_update(update)

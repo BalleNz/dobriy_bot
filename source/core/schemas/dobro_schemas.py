@@ -6,8 +6,10 @@ from uuid import UUID
 
 from source.core.enum.dobro_enum import CategoryType
 
+
 class Category(BaseModel):
     category_id: CategoryType = Field(..., description="Айди категории")
+
 
 class Advert(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -30,8 +32,7 @@ class Advert(BaseModel):
     meta_text: Optional[str] = Field(None, description="Мета-текст")
     has_report: Optional[bool] = Field(False, description="Есть отчет")
 
+
 class RequestAdvert(BaseModel):
     amount: Optional[int] = Field(..., description="Сумма пожертвования")
     advert_id: Optional[int] = Field(..., description="Айди объявления")
-
-    

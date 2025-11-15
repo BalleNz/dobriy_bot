@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple, Optional
-from source.presentation.max.states.fsm import UserState
-from source.infrastructure.max.api_client import NewMessageBody, MaxBotClient
+
+from source.infrastructure.database.repo.user_repo import UserRepository
+from source.infrastructure.max.api_client import MaxBotClient
+from source.presentation.max_bot.states.fsm import UserState
+
 
 class BaseHandler(ABC):
-    def __init__(self, client: MaxBotClient, repo: int):
+    def __init__(self, client: MaxBotClient):
         self.client = client
-        self.repo = repo
 
     @abstractmethod
-    async def handle(self, update: Dict, user_id: int, chat_id: int): 
+    async def handle(self, update: Dict, user_id: int, chat_id: int):
         pass
 
     @abstractmethod

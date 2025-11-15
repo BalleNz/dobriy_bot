@@ -10,10 +10,18 @@ from source.infrastructure.dishka import make_dishka_container
 
 from typing import Dict, List
 
+from source.core.lexicon.max import DONATION_CATEGORIES
+from source.core.schemas.dobro_schemas import Advert
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.infrastructure.parser.dobro import DobroApiClient
+from source.presentation.max_bot.handlers.base import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState, fsm
+
+
 class DonationsHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
-        update_type, payload, text_input = self._parse_update(update)  
-        if state == UserState.DONATION_ENTERING_AMOUNT and text_input: 
+        update_type, payload, text_input = self._parse_update(update)
+        if state == UserState.DONATION_ENTERING_AMOUNT and text_input:
             return True
         return (
             payload == "donate" or
@@ -31,12 +39,13 @@ class DonationsHandler(BaseHandler):
         state = await fsm.get_state(user_id)
         _, payload, text_input = self._parse_update(update)
         data = fsm.states.get(user_id, {}).get("data", {})
-        print(f"DEBUG donations: state = {state}, payload = {payload}, text_input = '{text_input}', data_keys = {list(data.keys())}")
+        print(
+            f"DEBUG donations: state = {state}, payload = {payload}, text_input = '{text_input}', data_keys = {list(data.keys())}")
 
         if payload == "donate":
             await fsm.set_state(user_id, UserState.DONATING_CATEGORY)
             buttons = [
-                [Button(type="callback", text=info["text"], payload=f"donate_cat_{key}")] 
+                [Button(type="callback", text=info["text"], payload=f"donate_cat_{key}")]
                 for key, info in DONATION_CATEGORIES.items()
             ]
             buttons.append([Button(type="callback", text="Назад", payload="main_menu")])
@@ -63,7 +72,7 @@ class DonationsHandler(BaseHandler):
             await fsm.set_state(user_id, UserState.SELECTING_ADVERT, data)
 
             all_adverts: List[Advert] = await client.get_adverts(recipient=category_enum, max_pages=1, page_size=5)
-            data["adverts"] = all_adverts 
+            data["adverts"] = all_adverts
 
             if not all_adverts:
                 body = NewMessageBody(text=f"В категории '{cat_key}' объявлений пока нет.")

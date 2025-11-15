@@ -1,5 +1,5 @@
 from source.infrastructure.max.api_client import MaxBotClient, NewMessageBody
-from source.presentation.max.handlers import *
+from source.presentation.max_bot.handlers import *
 #from source import Notifier
 from source.presentation.max.states.fsm import fsm
 from source.presentation.max.keyboards.keyboards import MAIN_MENU_BUTTONS

@@ -1,21 +1,25 @@
-from source.presentation.max.handlers import BaseHandler
-from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState, fsm
 from typing import Dict
+
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.presentation.max_bot.handlers import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState, fsm
+
 
 class FundChoiceHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
         _, payload, text_input = self._parse_update(update)
         # Фикс: уникальные состояния, игнорирует сумму для Donations
-        if state in [UserState.FUND_CHOOSING_CATEGORY, UserState.FUND_ENTERING_AMOUNT, UserState.FUND_ENTERING_FREQUENCY]:
-            return payload == "fund_choice" or (payload and payload.startswith("fund_cat_")) or (payload and payload.startswith("freq_")) or text_input
+        if state in [UserState.FUND_CHOOSING_CATEGORY, UserState.FUND_ENTERING_AMOUNT,
+                     UserState.FUND_ENTERING_FREQUENCY]:
+            return payload == "fund_choice" or (payload and payload.startswith("fund_cat_")) or (
+                        payload and payload.startswith("freq_")) or text_input
         return payload == "fund_choice"
 
-    async def handle(self, update: Dict, user_id: int, chat_id: int): 
-        state = await fsm.get_state(user_id) 
+    async def handle(self, update: Dict, user_id: int, chat_id: int):
+        state = await fsm.get_state(user_id)
         _, payload, text_input = self._parse_update(update)
         data = fsm.states.get(user_id, {}).get("data", {})
-        print(f"DEBUG fund_choice: state = {state}, payload = {payload}, text_input = '{text_input}'")  
+        print(f"DEBUG fund_choice: state = {state}, payload = {payload}, text_input = '{text_input}'")
 
         if payload == "fund_choice":
             await fsm.set_state(user_id, UserState.FUND_CHOOSING_CATEGORY, data)
