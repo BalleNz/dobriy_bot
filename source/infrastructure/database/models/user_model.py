@@ -13,8 +13,8 @@ class User(BaseModel):
 
     max_id: Mapped[str] = mapped_column(String, comment="max id", unique=True)
     username: Mapped[str] = mapped_column(String, comment="username")
-    first_name: Mapped[str] = mapped_column(String, comment="Имя")
-    last_name: Mapped[str] = mapped_column(String, comment="Фамилия")
+    first_name: Mapped[str] = mapped_column(String, default=None, comment="Имя")
+    last_name: Mapped[str] = mapped_column(String, default=None, comment="Фамилия")
 
     privacy_share_profile: Mapped[str] = mapped_column(String, comment="настройка приватности")
 
