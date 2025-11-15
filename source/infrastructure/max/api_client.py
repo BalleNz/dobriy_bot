@@ -1,26 +1,28 @@
-import aiohttp
 from typing import Optional, Dict, Any, List
 from urllib.parse import urlparse
-import re
 
-from pydantic import BaseModel as PydanticBaseModel
-from pydantic import BaseModel
+import aiohttp
 import httpx
+from pydantic import BaseModel
+
 
 class NewMessageBody(BaseModel):
     text: str
     attachments: Optional[List[Dict]] = None
-    format: Optional[str] = "markdown" 
+    format: Optional[str] = "markdown"
+
 
 class InlineKeyboard(BaseModel):
     type: str = "inline_keyboard"
     payload: Dict
+
 
 class Button(BaseModel):
     type: str
     text: str
     url: Optional[str] = None
     payload: Optional[str] = None
+
 
 class MaxBotClient:
     def __init__(self, token: str, base_url: str):
@@ -36,14 +38,16 @@ class MaxBotClient:
         if self.session:
             await self.session.close()
 
-    async def _request(self, method: str, endpoint: str, params: Optional[Dict] = None, json_data: Optional[Dict] = None) -> Dict[str, Any]:
+    async def _request(self, method: str, endpoint: str, params: Optional[Dict] = None,
+                       json_data: Optional[Dict] = None) -> Dict[str, Any]:
         if params is None:
             params = {}
         params['access_token'] = self.token
         async with self.session.request(method, f"{self.base_url}{endpoint}", params=params, json=json_data) as resp:
             return await resp.json()
 
-    async def send_message(self, chat_id: int, body: NewMessageBody, buttons: Optional[List[List[Button]]] = None) -> Dict[str, Any]:
+    async def send_message(self, chat_id: int, body: NewMessageBody, buttons: Optional[List[List[Button]]] = None) -> \
+    Dict[str, Any]:
         payload = body.model_dump(exclude_none=True)
         attachments = payload.get("attachments", [])
         if buttons:
@@ -56,32 +60,32 @@ class MaxBotClient:
                             'type': b.type,
                             'text': b.text,
                         }
-                        
+
                         if b.type == 'link':
                             b_dict['url'] = b.url or ''  # str or ''
                         elif b.type == 'callback':
                             b_dict['payload'] = b.payload or ''  # str or ''
-                        
+
                         b_dict = {k: str(v) for k, v in b_dict.items()}
                         b_dict = {k: v for k, v in b_dict.items() if v != ''}
-                        
+
                         row.append(b_dict)
                     except Exception as e:
-                        #print(f"DEBUG button error: {e}, b={b}")
+                        # print(f"DEBUG button error: {e}, b={b}")
                         row.append({"type": "callback", "text": "Button", "payload": "default"})
                 kb_buttons.append(row)
-            
+
             kb_payload = {"buttons": kb_buttons}
-            #print(f"DEBUG send_message: kb_payload = {kb_payload}")
-            
+            # print(f"DEBUG send_message: kb_payload = {kb_payload}")
+
             kb = InlineKeyboard(payload=kb_payload).model_dump(exclude_none=True)
             attachments.append(kb)
-        
+
         payload["attachments"] = attachments
-        #print(f"DEBUG send_message: full payload = {payload}")
-        
+        # print(f"DEBUG send_message: full payload = {payload}")
+
         resp = await self._request("POST", "/messages", params={"chat_id": chat_id}, json_data=payload)
-        #print(f"DEBUG send_message: API result = {resp}")
+        # print(f"DEBUG send_message: API result = {resp}")
         return resp
 
     async def get_updates(self, marker: Optional[int] = None, timeout: int = 30, limit: int = 100) -> Dict[str, Any]:
@@ -92,7 +96,7 @@ class MaxBotClient:
 
     async def get_upload_url(self, file_type: str) -> Dict[str, Any]:
         return await self._request("POST", "/uploads", params={"type": file_type})
-    
+
     async def upload_image_from_url(self, image_url: str) -> str:
         try:
             async with httpx.AsyncClient() as http_client:
@@ -106,7 +110,7 @@ class MaxBotClient:
             filename = f'image.{extension}'
 
             upload_url = await self.get_upload_url("image")
-            photo_ids = upload_url.get('photoIds')  
+            photo_ids = upload_url.get('photoIds')
             form = aiohttp.FormData()
             form.add_field('data', image_bytes, filename=filename, content_type=content_type)
             async with self.session.post(upload_url['url'], data=form) as resp:

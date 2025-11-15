@@ -3,6 +3,7 @@ from dishka import Provider, provide, Scope
 from source.infrastructure.config import MaxConfig
 from source.infrastructure.max.api_client import MaxBotClient
 
+
 class BotProvider(Provider):
     scope = Scope.APP
 

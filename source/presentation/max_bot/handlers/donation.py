@@ -1,36 +1,38 @@
-from source.presentation.max.handlers.base import BaseHandler
-from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState, fsm 
-from source.core.lexicon.max import DONATION_CATEGORIES
-from source.infrastructure.parser.dobro import DobroApiClient
-from source.core.schemas.dobro_schemas import Advert
-
 from typing import Dict, List
+
+from source.core.lexicon.max import DONATION_CATEGORIES
+from source.core.schemas.dobro_schemas import Advert
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.infrastructure.parser.dobro import DobroApiClient
+from source.presentation.max_bot.handlers.base import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState, fsm
+
 
 class DonationsHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
-        update_type, payload, text_input = self._parse_update(update)  
-        if state == UserState.DONATION_ENTERING_AMOUNT and text_input: 
+        update_type, payload, text_input = self._parse_update(update)
+        if state == UserState.DONATION_ENTERING_AMOUNT and text_input:
             return True
         return (
-            payload == "donate" or
-            (payload and payload.startswith("donate_cat_")) or
-            (payload and payload.startswith("select_advert_")) or
-            (payload and payload.startswith("donate_money_")) or
-            payload == "donate_money" or
-            state in [UserState.DONATING_CATEGORY, UserState.SELECTING_ADVERT, UserState.ENTERED_ADVERT]
+                payload == "donate" or
+                (payload and payload.startswith("donate_cat_")) or
+                (payload and payload.startswith("select_advert_")) or
+                (payload and payload.startswith("donate_money_")) or
+                payload == "donate_money" or
+                state in [UserState.DONATING_CATEGORY, UserState.SELECTING_ADVERT, UserState.ENTERED_ADVERT]
         )
 
     async def handle(self, update: Dict, user_id: int, chat_id: int):
         state = await fsm.get_state(user_id)
         _, payload, text_input = self._parse_update(update)
         data = fsm.states.get(user_id, {}).get("data", {})
-        print(f"DEBUG donations: state = {state}, payload = {payload}, text_input = '{text_input}', data_keys = {list(data.keys())}")
+        print(
+            f"DEBUG donations: state = {state}, payload = {payload}, text_input = '{text_input}', data_keys = {list(data.keys())}")
 
         if payload == "donate":
             await fsm.set_state(user_id, UserState.DONATING_CATEGORY)
             buttons = [
-                [Button(type="callback", text=info["text"], payload=f"donate_cat_{key}")] 
+                [Button(type="callback", text=info["text"], payload=f"donate_cat_{key}")]
                 for key, info in DONATION_CATEGORIES.items()
             ]
             buttons.append([Button(type="callback", text="Назад", payload="main_menu")])
@@ -51,7 +53,7 @@ class DonationsHandler(BaseHandler):
 
             client = DobroApiClient()
             all_adverts: List[Advert] = await client.get_adverts(recipient=category_enum, max_pages=1, page_size=5)
-            data["adverts"] = all_adverts 
+            data["adverts"] = all_adverts
 
             if not all_adverts:
                 body = NewMessageBody(text=f"В категории '{cat_key}' объявлений пока нет.")
@@ -116,7 +118,7 @@ class DonationsHandler(BaseHandler):
             client = DobroApiClient()
             link = await client.generate_donation_link(advert)
 
-            #await self.repo.save_donation(user_id, amount, advert.title or "Объявление", link) # уберем сохранение доната
+            # await self.repo.save_donation(user_id, amount, advert.title or "Объявление", link) # уберем сохранение доната
 
             text = f"**Пожертвование в '{advert.title or 'Объявление'}':**\nСумма: {amount} ₽\n\n[Перейти к донату]({link})"
             buttons = [

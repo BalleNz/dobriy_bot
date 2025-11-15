@@ -1,6 +1,6 @@
-from source.presentation.max.handlers import BaseHandler
+from source.presentation.max_bot.handlers import BaseHandler
 from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState, fsm
+from source.presentation.max_bot.states.fsm import UserState, fsm
 from source.core.lexicon.max import STATS_MONTHLY
 
 from typing import Dict

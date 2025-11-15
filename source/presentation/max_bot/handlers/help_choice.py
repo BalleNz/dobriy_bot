@@ -1,16 +1,17 @@
-from source.presentation.max.handlers.base import BaseHandler
-from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState
-from source.core.lexicon.max import FAQ_ITEMS
-
 from typing import Dict
+
+from source.core.lexicon.max import FAQ_ITEMS
+from source.infrastructure.max.api_client import Button, NewMessageBody
+from source.presentation.max_bot.handlers.base import BaseHandler
+from source.presentation.max_bot.states.fsm import UserState
+
 
 class HelpChoiceHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
         _, payload, _ = self._parse_update(update)
         return payload == "help"
 
-    async def handle(self, update: Dict,user_id: int, chat_id: int):
+    async def handle(self, update: Dict, user_id: int, chat_id: int):
         _, payload, _ = self._parse_update(update)
 
         if payload == "help":
