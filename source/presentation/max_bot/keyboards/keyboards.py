@@ -20,7 +20,7 @@ MAIN_MENU_BUTTONS = [
     # Ряд 4: Настройки пользователя
     [
         #Button(type="callback", text="🔔 Уведомления", payload="notifications"),
-        Button(type="callback", text="👤 Профиль", payload="profile")
+        #Button(type="callback", text="👤 Профиль", payload="profile")
     ],
     # Ряд 5: Инфо и поддержка 
     [

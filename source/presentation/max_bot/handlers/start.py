@@ -18,7 +18,7 @@ class StartHandler(BaseHandler):
         print(f"StartHandler: Handling for user_id={user_id}, chat_id={chat_id}")
         dishka_container = make_dishka_container()
         async with dishka_container() as req_container:
-            get_user = await req_container.get(CreateOrUpdateUser)  # Теперь factory на REQUEST доступен
+            get_user = await req_container.get(CreateOrUpdateUser)
             
             update_type, _, _ = self._parse_update(update)
             
@@ -36,7 +36,6 @@ class StartHandler(BaseHandler):
             
             updated_user = await get_user(user_schema)  # Вызов внутри scope
         
-        # ← Scope exited: REQUEST-deps (UoW, repo) автоматически финализируются (закрыты)
         
         body = NewMessageBody(text="**Я — Добрый помощник!**\n\nЯ помогу вам с благотворительностью.", format="markdown")
         await self.client.send_message(chat_id, body, MAIN_MENU_BUTTONS)

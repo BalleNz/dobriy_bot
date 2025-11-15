@@ -61,9 +61,10 @@ async def main():
                         if not handled:
                             update_type, _, text = BaseHandler._parse_update(update)
                             if text == "/start":
-                                logger.info("Fallback: /start for user_id={user_id}")
-                                await StartHandler(client).handle(update, user_id, chat_id)
-                                handled = True
+                                pass
+                                #logger.info("Fallback: /start for user_id={user_id}")
+                                #await StartHandler(client).handle(update, user_id, chat_id)
+                                #handled = True
 
                         if not handled and update.get("callback", {}).get("payload") == "main_menu":
                             logger.info("Fallback: main_menu for user_id={user_id}")

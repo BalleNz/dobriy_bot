@@ -10,6 +10,8 @@ from source.application.profile.get_by_id import GetUserProfileById
 from source.application.profile.merge import MergeUserProfile
 from source.application.profile.create_or_update import CreateOrUpdateProfile
 from source.application.user.create_or_update import CreateOrUpdateUser
+from source.application.user.get_by_id import GetUserSchemaById
+
 
 
 #from source.application.user
@@ -32,7 +34,7 @@ class ProfileHandler(BaseHandler):
         dishka_container = make_dishka_container()
         async with dishka_container() as req_container:
             create_or_update = await req_container.get(CreateOrUpdateProfile)
-            get_user = await req_container.get(CreateOrUpdateUser)
+            get_user = await req_container.get(GetUserSchemaById)
 
             state = await fsm.get_state(user_id)
             _, payload, text_input = self._parse_update(update)
@@ -42,9 +44,9 @@ class ProfileHandler(BaseHandler):
                     max_id=str(user_id)
                     )
                     )
-                user: UserSchema = await get_user(UserSchema(
+                
+                user: UserSchema = await get_user(
                     max_id=str(user_id)
-                    )
                     )
                 
                 name = f"{user.first_name} {user.last_name or ''}".strip()
