@@ -93,3 +93,25 @@ class BaseRepository(Generic[M]):
     async def merge(self, model_schema: S) -> None:
         model: M = self.model.from_pydantic(model_schema)
         await self.session.merge(model)
+
+    async def create_or_update(self, model_schema: S) -> S:
+        """
+        Создает новую запись или обновляет существующую.
+        Определяет наличие записи по ID в model_schema.
+        """
+        try:
+            # Пытаемся создать новую запись
+            return await self.create(model_schema)
+        except IntegrityError:
+            # Если возникает ошибка уникальности (запись уже существует),
+            # обновляем существующую запись
+            await self.session.rollback()
+
+            # Получаем ID из схемы для обновления
+            model_id = getattr(model_schema, 'id', None)
+            if model_id is None:
+                raise ValueError(f"Cannot update {self.model.__name__} without ID")
+
+            # Обновляем запись, исключая поле ID из данных для обновления
+            update_data = model_schema.dict(exclude={'id'})
+            return await self.update(model_id, **update_data)

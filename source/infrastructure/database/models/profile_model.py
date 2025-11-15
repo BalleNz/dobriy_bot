@@ -1,10 +1,11 @@
-
 from datetime import datetime
+from typing import Type
 
 from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from source.infrastructure.database.models.base_model import BaseModel
+from source.core.schemas.profile import ProfileSchema
+from source.infrastructure.database.models.base_model import BaseModel, S
 
 
 class Profile(BaseModel):
@@ -21,3 +22,6 @@ class Profile(BaseModel):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+
+    def schema_class(cls) -> Type[S]:
+        return ProfileSchema

@@ -25,5 +25,3 @@ class UserRepository(BaseRepository):
         stmt: Select = select(self.model).where(self.model.max_id == max_id)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
-
-
