@@ -1,7 +1,10 @@
-from source.infrastructure.database.models.base_model import BaseModel
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, DateTime, ForeignKey, Integer, UUID as PG_UUID
+from typing import Type
 
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from source.core.schemas.user import UserSchema
+from source.infrastructure.database.models.base_model import BaseModel, S
 from source.infrastructure.database.models.profile_model import Profile
 
 
@@ -22,3 +25,6 @@ class User(BaseModel):
     )
 
     # total payment
+
+    def schema_class(cls) -> Type[S]:
+        return UserSchema
