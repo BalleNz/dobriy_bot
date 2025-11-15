@@ -14,6 +14,8 @@ annotated-types==0.7.0
     # via pydantic
 anyio==4.11.0
     # via httpx
+asyncpg==0.30.0
+    # via -r requirements.in
 attrs==25.4.0
     # via aiohttp
 certifi==2025.11.12
@@ -49,7 +51,7 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-psycopg2-binary==2.9.11
+psycopg2==2.9.11
     # via -r requirements.in
 pydantic==2.12.4
     # via -r requirements.in
