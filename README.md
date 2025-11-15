@@ -67,6 +67,10 @@ POSTGRES_DB=max_bot
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
 
+DB_USER=admin
+DB_PASSWORD=admin
+DB_NAME=max_bot
+
 ACCESS_TOKEN=f9LHodD0cOIOXPOaYi1ASsQWIi2yRznZmkF9BOQmQ4L7Pfv-PgT3rlWRzhqH7xeKlniTRwLr_1jqp-1z59G2
 DB_URL=postgresql+asyncpg://user:pass@localhost/charity_bot
 VK_DOBRO_BASE=https://dobro.mail.ru
