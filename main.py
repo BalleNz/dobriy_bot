@@ -1,8 +1,8 @@
 from source.infrastructure.max.api_client import MaxBotClient, NewMessageBody
 from source.presentation.max_bot.handlers import *
 #from source import Notifier
-from source.presentation.max.states.fsm import fsm
-from source.presentation.max.keyboards.keyboards import MAIN_MENU_BUTTONS
+from source.presentation.max_bot.states.fsm import fsm
+from source.presentation.max_bot.keyboards.keyboards import MAIN_MENU_BUTTONS
 from source.infrastructure.dishka import make_dishka_container
 
 import logging

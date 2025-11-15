@@ -1,22 +1,13 @@
-from source.presentation.max.handlers.base import BaseHandler
+from source.presentation.max_bot.handlers.base import BaseHandler
 from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.presentation.max.states.fsm import UserState, fsm 
+from source.presentation.max_bot.states.fsm import UserState, fsm 
 from source.core.lexicon.max import DONATION_CATEGORIES
-from source.presentation.max.keyboards.keyboards import MAIN_MENU_BUTTONS
+from source.presentation.max_bot.keyboards.keyboards import MAIN_MENU_BUTTONS
 from source.infrastructure.parser.dobro import DobroApiClient
 from source.core.schemas.dobro_schemas import Advert
 from source.infrastructure.dishka import make_dishka_container
 
-
 from typing import Dict, List
-
-from source.core.lexicon.max import DONATION_CATEGORIES
-from source.core.schemas.dobro_schemas import Advert
-from source.infrastructure.max.api_client import Button, NewMessageBody
-from source.infrastructure.parser.dobro import DobroApiClient
-from source.presentation.max_bot.handlers.base import BaseHandler
-from source.presentation.max_bot.states.fsm import UserState, fsm
-
 
 class DonationsHandler(BaseHandler):
     def can_handle(self, update: Dict, state: UserState) -> bool:
