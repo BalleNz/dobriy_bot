@@ -5,3 +5,4 @@ dishka
 aiohttp
 httpx
 environs
+asyncpg
