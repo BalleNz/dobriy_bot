@@ -5,11 +5,25 @@ import json
 
 import httpx
 from uuid import UUID, uuid4 
+import datetime
 
 from source.application.interface.parser import BaseAPIClient
 from source.core.enum.dobro_enum import CategoryType
 from source.core.schemas.dobro_schemas import Advert
 
+from datetime import datetime
+import re # Для обработки timezone если нужно
+def parse_date(rfc3339_str: str) -> Optional[datetime]:
+    if not rfc3339_str:
+        return None
+    rfc3339_str = rfc3339_str.replace('Z', '+00:00')
+    try:
+        if '.' in rfc3339_str:
+            return datetime.strptime(rfc3339_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+        else:
+            return datetime.strptime(rfc3339_str, '%Y-%m-%dT%H:%M:%S%z')
+    except ValueError:
+        return None
 
 
 class DobroApiClient(BaseAPIClient):
@@ -61,15 +75,28 @@ class DobroApiClient(BaseAPIClient):
                         logging.info(f"Пустая страница {page}. Завершаем.")
                         break
                     new_uuid = uuid4()
-                    adverts = [Advert(
-                        image=f'https://dobro.mail.ru{item.get("images").get("web_project_list").get("src", "")}',
-                        id=new_uuid,
-                        description=item.get('short_description'),
-                        title=item.get('name'),
-                        url=f'https://dobro.mail.ru/projects/{item.get("slug")}',
-                        goal_amount=int(item.get("progress", {}).get("money_total", 0))
-                    )
-                    for item in projects]
+                    adverts = [
+                            Advert(
+                                image=f'https://dobro.mail.ru{item.get("images", {}).get("web_project_list", {}).get("src", "")}',
+                                id=item.get('slug'),  # Используем slug как уникальный ID
+                                description=item.get('short_description'),
+                                title=item.get('name'),
+                                url=f'https://dobro.mail.ru/projects/{item.get("slug")}',
+                                goal_amount=int(item.get("progress", {}).get("money_total", 0)),
+                                money_collected=int(item.get("progress", {}).get("money_collected", 0)),
+                                percent=int(item.get("progress", {}).get("percent", 0)),
+                                money_left=int(item.get("progress", {}).get("money_left", 0)),
+                                city_name=item.get("city", {}).get("name"),
+                                fund_name=item.get("fund", {}).get("name"),
+                                start_date=parse_date(item.get("start_date", {}).get("rfc3339")),
+                                end_date=parse_date(item.get("end_date", {}).get("rfc3339")),
+                                is_urgent=item.get("is_urgent", False),
+                                lead=item.get('lead'),
+                                meta_text=item.get('meta_text'),
+                                has_report=item.get("has_report", False)
+                            )
+                    for item in projects
+                    ]
                     
                     all_adverts.extend(adverts)
                     logging.info(f"Страница {page}: +{len(adverts)} объявлений")

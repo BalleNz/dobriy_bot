@@ -3,7 +3,7 @@ from source.presentation.max.handlers import *
 #from source import Notifier
 from source.presentation.max.states.fsm import fsm
 from source.presentation.max.keyboards.keyboards import MAIN_MENU_BUTTONS
-from source.infrastructure.dishka.__init_ import make_dishka_container
+from source.infrastructure.dishka import make_dishka_container
 
 import logging
 import asyncio
@@ -31,7 +31,6 @@ async def main():
                     for update in updates["updates"]:
                         marker = update.get("marker")
                         
-                        # Извлечение user_id/chat_id (human sender)
                         update_type = update.get("update_type")
                         if update_type == "bot_started":
                             user_id = update["user"]["user_id"]
@@ -42,7 +41,7 @@ async def main():
                             chat_id = message.get("recipient", {}).get("chat_id")
                         elif update_type == "message_callback":
                             callback = update.get("callback", {})
-                            user_id = callback.get("user", {}).get("user_id")  # Human who clicked
+                            user_id = callback.get("user", {}).get("user_id") 
                             message = update.get("message", {})
                             chat_id = message.get("recipient", {}).get("chat_id")
                         else:
@@ -62,7 +61,6 @@ async def main():
                                 handled = True
                                 break
 
-                        # Fallback для /start
                         if not handled:
                             update_type, _, text = BaseHandler._parse_update(update)
                             if text == "/start":
@@ -77,8 +75,8 @@ async def main():
 
                 await asyncio.sleep(0.1)
             except Exception as e:
-                logger.error(f"Loop error: {e}", exc_info=True)  # Полный traceback
-                await asyncio.sleep(5)  # Retry delay
+                logger.error(f"Loop error: {e}", exc_info=True) 
+                await asyncio.sleep(5)
 
 if __name__ == "__main__":
     asyncio.run(main())
